@@ -337,8 +337,8 @@ def model_re_train(x_train, y_train, x_validation, y_validation, class_num, samp
     for key in weight_dict:
         class_weights[key] = weight_dict[key];
 
-    epoch_num = 5;
-    batch_size = 16;
+    epoch_num = 100;
+    batch_size = 32;
 
     train_iterator, train_next_element, validation_iterator, validation_next_element = data_set_gen(x_train, y_train,
                                                                                                     sample_weight_list,

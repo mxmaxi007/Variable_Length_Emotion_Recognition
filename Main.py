@@ -83,7 +83,7 @@ def main():
         x_validation = Normalization.normalize(x_validation, mean_vec, std_vec);
         x_test = Normalization.normalize(x_test, mean_vec, std_vec);
 
-        re_train = False;
+        re_train = True;
 
         if classifer_type == "CNN_RNN":
             if re_train:
