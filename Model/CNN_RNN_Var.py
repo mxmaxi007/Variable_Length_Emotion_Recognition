@@ -89,7 +89,7 @@ def model_design(class_num, feature_size):
     with tf.name_scope("conv1"):
         mask_conv1 = conv_mask(inputs);
         W_conv1 = weight_variable([1, 12, 1, 6]);
-        b_conv1 = bias_variable([4]);
+        b_conv1 = bias_variable([6]);
         h_conv1 = tf.nn.relu(conv2d(inputs, W_conv1) + b_conv1) * mask_conv1;
 
     with tf.name_scope("pool1"):
@@ -97,8 +97,8 @@ def model_design(class_num, feature_size):
 
     with tf.name_scope("conv2"):
         mask_conv2 = conv_mask(h_pool1);
-        W_conv2 = weight_variable([1, 8, 4, 10]);
-        b_conv2 = bias_variable([8]);
+        W_conv2 = weight_variable([1, 8, 6, 10]);
+        b_conv2 = bias_variable([10]);
         h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2) * mask_conv2;
 
     with tf.name_scope("pool2"):
