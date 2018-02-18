@@ -62,13 +62,13 @@ def main():
 
         re_train = False;
 
-        # if classifer_type == "CNN_RNN":
-        #     if re_train:
-        #         CNN_RNN_Const.model_re_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
-        #                             weight_dict, output_dir);
-        #     else:
-        #         CNN_RNN_Const.model_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
-        #                             weight_dict, output_dir);
+        if classifer_type == "CNN_RNN":
+            if re_train:
+                CNN_RNN_Const.model_re_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
+                                    weight_dict, output_dir);
+            else:
+                CNN_RNN_Const.model_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
+                                    weight_dict, output_dir);
 
         model_dir = os.path.join(output_dir, "model");
         Accuracy.accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict);
