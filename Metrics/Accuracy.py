@@ -72,7 +72,7 @@ def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict):
                 "dropout/keep_prob:0": 1.0});
 
             prob = info["probabilities"];
-            print(prob);
+            # print(prob);
             predict = prob.sum(axis=0).argmax();
             y_predict.append(predict);
 
