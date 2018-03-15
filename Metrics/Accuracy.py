@@ -61,7 +61,7 @@ def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
     y_predict = [];
 
     fail_npy_dir = os.path.join(output_dir, "fail_npy");
-    shutil.rmtree(fail_npy_dir);
+    shutil.rmtree(fail_npy_dir, ignore_errors=True);
     os.mkdir(fail_npy_dir);
 
 
