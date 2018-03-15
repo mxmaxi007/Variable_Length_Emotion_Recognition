@@ -47,6 +47,9 @@ def main():
         x_train, y_train, sample_weight_list = Normalization.length_sort(x_train, y_train, sample_weight_list);
         mean_vec, std_vec = Normalization.get_mean_variance(x_train);
 
+        normal_para = np.array([mean_vec, std_vec]);
+        np.save(os.path.join(output_dir, "normal_para_const.npy"), normal_para);
+
         x_train = Normalization.normalize(x_train, mean_vec, std_vec);
         x_validation = Normalization.normalize_list(x_validation, mean_vec, std_vec);
         x_test = Normalization.normalize_list(x_test, mean_vec, std_vec);
@@ -60,18 +63,18 @@ def main():
         # elif classifer_type == "CNN_LSTM_Attention":
         #     CNN_LSTM_Attention_Const.model_train(x_train, y_train, emo_num, weight_dict, model_file);
 
-        re_train = False;
-
-        if classifer_type == "CNN_RNN":
-            if re_train:
-                CNN_RNN_Const.model_re_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
-                                    weight_dict, output_dir);
-            else:
-                CNN_RNN_Const.model_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
-                                    weight_dict, output_dir);
+        # re_train = False;
+        #
+        # if classifer_type == "CNN_RNN":
+        #     if re_train:
+        #         CNN_RNN_Const.model_re_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
+        #                             weight_dict, output_dir);
+        #     else:
+        #         CNN_RNN_Const.model_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
+        #                             weight_dict, output_dir);
 
         model_dir = os.path.join(output_dir, "model");
-        Accuracy.accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict);
+        Accuracy.accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict, output_dir);
 
     elif spectrogram_type == "Var":
         x_train, y_train, x_validation, y_validation, x_test, y_test, weight_dict, sample_weight_list = Load_Data.load_spectrogram_var(
@@ -79,26 +82,29 @@ def main():
         x_train, y_train, sample_weight_list = Normalization.length_sort(x_train, y_train, sample_weight_list);
         mean_vec, std_vec = Normalization.get_mean_variance(x_train);
 
+        normal_para = np.array([mean_vec, std_vec]);
+        np.save(os.path.join(output_dir, "normal_para_var.npy"), normal_para);
+
         x_train = Normalization.normalize(x_train, mean_vec, std_vec);
         x_validation = Normalization.normalize(x_validation, mean_vec, std_vec);
         x_test = Normalization.normalize(x_test, mean_vec, std_vec);
 
-        re_train = False;
-
-        if classifer_type == "CNN_RNN":
-            if re_train:
-                CNN_RNN_Var.model_re_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
-                                    weight_dict, output_dir);
-            else:
-                CNN_RNN_Var.model_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
-                                    weight_dict, output_dir);
-
-            # if re_train:
-            #     CNN_RNN_Var.model_re_train(x_train, y_train, x_train, y_train, emo_num, sample_weight_list,
-            #                                weight_dict, output_dir);
-            # else:
-            #     CNN_RNN_Var.model_train(x_train, y_train, x_train, y_train, emo_num, sample_weight_list,
-            #                             weight_dict, output_dir);
+        # re_train = False;
+        #
+        # if classifer_type == "CNN_RNN":
+        #     if re_train:
+        #         CNN_RNN_Var.model_re_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
+        #                             weight_dict, output_dir);
+        #     else:
+        #         CNN_RNN_Var.model_train(x_train, y_train, x_test, y_test, emo_num, sample_weight_list,
+        #                             weight_dict, output_dir);
+        #
+        #     # if re_train:
+        #     #     CNN_RNN_Var.model_re_train(x_train, y_train, x_train, y_train, emo_num, sample_weight_list,
+        #     #                                weight_dict, output_dir);
+        #     # else:
+        #     #     CNN_RNN_Var.model_train(x_train, y_train, x_train, y_train, emo_num, sample_weight_list,
+        #     #                             weight_dict, output_dir);
 
         model_dir = os.path.join(output_dir, "model");
         Accuracy.accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict);

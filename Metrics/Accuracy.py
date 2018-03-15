@@ -1,7 +1,9 @@
 # encoding=UTF-8
 
-import numpy as np
+import os
+import shutil
 
+import numpy as np
 import tensorflow as tf
 
 import keras
@@ -53,10 +55,15 @@ def metrics_report(y_predict, y_test, emo_num, emo_dict):
     print("Confusion Matrix:\n{}".format(confusion_mat));
 
 
-def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict):
+def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
     tf.reset_default_graph();
     sample_num = len(x_test);
     y_predict = [];
+
+    fail_npy_dir = os.path.join(output_dir, "fail_npy");
+    shutil.rmtree(fail_npy_dir);
+    os.mkdir(fail_npy_dir);
+
 
     with tf.Session() as sess:
         info = dict();
@@ -76,7 +83,12 @@ def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict):
             predict = prob.sum(axis=0).argmax();
             y_predict.append(predict);
 
+            if predict != y_test[i]:
+                npy_path = os.path.join(fail_npy_dir, str(y_test[i]) + "_" + str(predict) + ".npy");
+                np.save(npy_path, x_test[i]);
+
     metrics_report(y_predict, y_test, emo_num, emo_dict);
+
 
 
 def accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict):
