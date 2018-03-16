@@ -107,7 +107,7 @@ def main():
         #     #                             weight_dict, output_dir);
 
         model_dir = os.path.join(output_dir, "model");
-        Accuracy.accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict);
+        Accuracy.accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict, output_dir);
         # Accuracy.accuracy_var(model_dir, x_train, y_train, emo_num, emo_dict);
 
     end = time.time();

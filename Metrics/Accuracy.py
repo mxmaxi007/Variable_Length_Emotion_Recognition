@@ -90,11 +90,14 @@ def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
     metrics_report(y_predict, y_test, emo_num, emo_dict);
 
 
-
-def accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict):
+def accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
     tf.reset_default_graph();
     sample_num = len(x_test);
     y_predict = [];
+
+    var_right_npy_dir = os.path.join(output_dir, "var_right_npy");
+    shutil.rmtree(var_right_npy_dir, ignore_errors=True);
+    os.mkdir(var_right_npy_dir);
 
     with tf.Session() as sess:
         info = dict();
@@ -111,5 +114,10 @@ def accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict):
 
             y_predict.append(info["classes"][0]);
             # print(info["probabilities"][0]);
+
+
+            if info["classes"][0] == y_test[i]:
+                npy_path = os.path.join(var_right_npy_dir, str(y_test[i]) + "_" + str(i) + ".npy");
+                np.save(npy_path, x_test[i]);
 
     metrics_report(y_predict, y_test, emo_num, emo_dict);
