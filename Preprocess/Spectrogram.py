@@ -8,7 +8,7 @@ import time
 import shutil
 
 import numpy as np
-from spectrum import Spectrogram, readwav
+from spectrum import readwav
 
 import tensorflow as tf
 
@@ -40,22 +40,22 @@ def get_spectrogram(wav_file, seg_sec):
     data, sample_rate = readwav(wav_file);
     data = data.astype(np.float32);
 
-    sample_num = len(data);  # 采样点数量
-    SEG_LEN = sample_rate * seg_sec;  # 切分的每一个语音段中采样点的数量
-    WINDOW_LEN = int(sample_rate * 0.04);  # DFT窗口大小
+    sample_num = len(data);  # the number of sample points in the whole speech sentence
+    WINDOW_LEN = int(sample_rate * 0.04);  # window length
 
     print("Sample Rate = {}, Window Length = {}".format(sample_rate, WINDOW_LEN));
 
     log_magnitude_spectrograms = cal_spectrogram(WINDOW_LEN);
 
-    if seg_sec < 0:
+    if seg_sec < 0: # Calculate the spectrogram from the whole wav sentence
         with tf.Session() as sess:
             spectrogram = sess.run(log_magnitude_spectrograms, feed_dict={"signals:0": data.reshape(1, data.shape[0])})[0];
 
         time_scale, freq_scale = spectrogram.shape;
         print("Spectrogram Shape = ({}, {})".format(time_scale, freq_scale));
         return spectrogram[:, :int(freq_scale / 2)];
-    else:
+    else: # Calculate the spectrogram from some fixed-length speech segments
+        SEG_LEN = sample_rate * seg_sec;  # the number of the sample points in a speech segment
         spectrogram_list = [];
 
         with tf.Session() as sess:
@@ -82,55 +82,6 @@ def get_spectrogram(wav_file, seg_sec):
                 spectrogram_list.append(spectrogram[:, :int(freq_scale / 2)]);
 
         return spectrogram_list;
-
-
-# def get_spectrogram(wav_file, seg_sec):
-#     data, sample_rate = readwav(wav_file);
-#
-#     sample_num = len(data);  # 采样点数量
-#     SEG_LEN = sample_rate * seg_sec;  # 切分的每一个语音段中采样点的数量
-#     WINDOW_LEN = int(sample_rate * 0.04);  # DFT窗口大小
-#
-#     if seg_sec < 0:
-#         p = Spectrogram(data, ws=int(WINDOW_LEN / 4), W=WINDOW_LEN, sampling=sample_rate);
-#         p.periodogram();
-#         spectrogram = 10 * np.log10(p.results);
-#         freq_scale, time_scale = spectrogram.shape;
-#         return spectrogram[:int(freq_scale / 2)];
-#     else:
-#         spectrogram_list = [];
-#         test_data = np.ones(SEG_LEN);
-#         p = Spectrogram(test_data, ws=int(WINDOW_LEN / 4), W=WINDOW_LEN, sampling=sample_rate);
-#         p.periodogram();
-#         freq_scale, time_scale = p.results.shape;
-#         print(freq_scale, time_scale);
-#
-#         for i in range(int(math.ceil(sample_num / SEG_LEN))):
-#             start = i * SEG_LEN;
-#             end = (i + 1) * SEG_LEN;
-#
-#             if end > sample_num:
-#                 cur_signal = data[start:];
-#             else:
-#                 cur_signal = data[start:end];
-#
-#             if len(cur_signal) <= WINDOW_LEN * 2:
-#                 continue;
-#
-#             p = Spectrogram(cur_signal, ws=int(WINDOW_LEN / 4), W=WINDOW_LEN, sampling=sample_rate);
-#             p.periodogram();
-#
-#             spectrogram = 10 * np.log10(p.results);
-#             spectrogram = np.hstack((spectrogram, np.zeros((freq_scale, time_scale - spectrogram.shape[1]))));  # zero padding
-#             freq_scale, time_scale = spectrogram.shape;
-#             # print(freq_scale, time_scale);
-#             # spectrogram_list.append(spectrogram);
-#             spectrogram_list.append(spectrogram[:int(freq_scale / 2)]);
-#
-#             # p.results = spectrogram[:int(freq_scale / 2)];
-#             # p.plot(filename="spectrogram" + str(i) + ".pdf");
-#
-#         return spectrogram_list;
 
 
 def wav_preprocess(wav_dir_path, spectrogram_dir_path, spectrogram_type):

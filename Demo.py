@@ -21,7 +21,7 @@ import Model.CNN_RNN_Const as CNN_RNN_Const
 
 import Metrics.Accuracy as Accuracy
 
-name = "2_0"
+name = "3_339"
 
 
 def Select_Right():
@@ -98,8 +98,6 @@ def Var_CNN_Output():
 
     input_im.save("/Users/max/Downloads/Data/Personal/interspeech18/NN_Output/spectrogram_" + name + ".jpg");
 
-
-
     cnn_out = cnn_out.sum(axis=3).reshape(cnn_out.shape[1], cnn_out.shape[2]);
     output_min = cnn_out.min();
     output_max = cnn_out.max();
@@ -161,17 +159,17 @@ def Const_CNN_Output():
 
 
 def Var_RNN_Output():
-    spectrogram_path = "/Users/max/Downloads/Data/Personal/interspeech18/right_npy/" + name + ".npy";
+    spectrogram_path = "/Users/max/Downloads/Data/Personal/interspeech18/var_right_npy/" + name + ".npy";
     model_dir = "/Users/max/Downloads/Data/Personal/interspeech18/CNN_RNN_Var_3/model";
 
     spectrogram = np.load(spectrogram_path);
     spectrogram = spectrogram.reshape(spectrogram.shape[0], spectrogram.shape[1], 1);
+
     print(spectrogram.shape);
 
     emo_dict = {0: "Neutral", 1: "Angry", 2: "Happy", 3: "Sad"};
     emo_num = 4;
 
-    tf.reset_default_graph();
     y_predict = [];
 
     tf.reset_default_graph();
@@ -185,15 +183,28 @@ def Var_RNN_Output():
             "inputs:0": spectrogram.reshape(1, spectrogram.shape[0], spectrogram.shape[1], spectrogram.shape[2])
         });
 
+    spectrogram[np.where(spectrogram < 0)] = 0;
+    spectrogram = spectrogram.reshape(spectrogram.shape[0], spectrogram.shape[1]);
+    input_min = spectrogram.min();
+    input_max = spectrogram.max();
+    spectrogram = 256 - 256 * (spectrogram - input_min) / (input_max - input_min);
+
+    input_im = Image.fromarray(spectrogram.T[::-1, :]);
+    # output_im.show();
+    if input_im.mode != 'RGB':
+        input_im = input_im.convert('RGB');
+
+    input_im.save("/Users/max/Downloads/Data/Personal/interspeech18/NN_Output/spectrogram_" + name + ".jpg");
+
     rnn_out = rnn_out.reshape(rnn_out.shape[1], rnn_out.shape[2]);
     output_min = rnn_out.min();
     output_max = rnn_out.max();
-    cnn_out = 256 - 256 * (rnn_out - output_min) / (output_max - output_min);
+    rnn_out = 256 - 256 * (rnn_out - output_min) / (output_max - output_min);
 
     # input_im = Image.fromarray(spectrogram.T);
     # input_im.show();
 
-    output_im = Image.fromarray(cnn_out.T);
+    output_im = Image.fromarray(rnn_out.T);
     # output_im.show();
     if output_im.mode != 'RGB':
         output_im = output_im.convert('RGB');
@@ -250,7 +261,7 @@ def main():
     # Select_Right();
 
     Var_RNN_Output();
-    Const_RNN_Output();
+    # Const_RNN_Output();
 
     end = time.time();
     print("Total Time: {}s".format(end - start));

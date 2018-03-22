@@ -1,9 +1,5 @@
 # encoding=UTF-8
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import os
 import shutil
 
@@ -87,7 +83,7 @@ def model_design(class_num, feature_size):
     inputs = tf.placeholder(tf.float32, shape=[None, None, feature_size, 1], name="inputs");
 
     with tf.name_scope("conv1"):
-        mask_conv1 = conv_mask(inputs);
+        mask_conv1 = conv_mask(inputs); # Mask the padding value
         W_conv1 = weight_variable([1, 12, 1, 6]);
         b_conv1 = bias_variable([6]);
         h_conv1 = tf.nn.relu(conv2d(inputs, W_conv1) + b_conv1) * mask_conv1;
@@ -148,14 +144,14 @@ def model_design(class_num, feature_size):
     labels = tf.placeholder(tf.int32, shape=[None], name="labels");
 
     with tf.name_scope("metrics"):
-        # Add evaluation metrics (for EVAL mode)
+        # Add evaluation metrics
         eval_acc_ops = tf.metrics.accuracy(labels=labels, predictions=predictions["classes"], name="accuracy");
 
     with tf.name_scope("loss"):
         # Sample Weights
         sample_weights = tf.placeholder(tf.float32, shape=[None], name="sample_weights");
 
-        # Calculate Loss (for both TRAIN and EVAL modes)
+        # Calculate Loss
         loss = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits, weights=sample_weights), name="cross_entropy");
 
     # Configure the Training Op (for TRAIN mode)

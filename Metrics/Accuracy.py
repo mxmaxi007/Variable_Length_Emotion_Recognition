@@ -6,10 +6,6 @@ import shutil
 import numpy as np
 import tensorflow as tf
 
-import keras
-from keras.models import load_model
-from keras import metrics
-
 
 def metrics_report(y_predict, y_test, emo_num, emo_dict):
     total_num = len(y_test);
@@ -55,14 +51,15 @@ def metrics_report(y_predict, y_test, emo_num, emo_dict):
     print("Confusion Matrix:\n{}".format(confusion_mat));
 
 
-def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
+def accuracy_const(output_dir, x_test, y_test, emo_num, emo_dict):
+    model_dir = os.path.join(output_dir, "model");
     tf.reset_default_graph();
     sample_num = len(x_test);
     y_predict = [];
 
-    fail_npy_dir = os.path.join(output_dir, "fail_npy");
-    shutil.rmtree(fail_npy_dir, ignore_errors=True);
-    os.mkdir(fail_npy_dir);
+    # fail_npy_dir = os.path.join(output_dir, "fail_npy");
+    # shutil.rmtree(fail_npy_dir, ignore_errors=True);
+    # os.mkdir(fail_npy_dir);
 
 
     with tf.Session() as sess:
@@ -83,21 +80,22 @@ def accuracy_const(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
             predict = prob.sum(axis=0).argmax();
             y_predict.append(predict);
 
-            if predict != y_test[i]:
-                npy_path = os.path.join(fail_npy_dir, str(y_test[i]) + "_" + str(predict) + ".npy");
-                np.save(npy_path, x_test[i]);
+            # if predict != y_test[i]:
+            #     npy_path = os.path.join(fail_npy_dir, str(y_test[i]) + "_" + str(predict) + ".npy");
+            #     np.save(npy_path, x_test[i]);
 
     metrics_report(y_predict, y_test, emo_num, emo_dict);
 
 
-def accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
+def accuracy_var(output_dir, x_test, y_test, emo_num, emo_dict):
+    model_dir = os.path.join(output_dir, "model");
     tf.reset_default_graph();
     sample_num = len(x_test);
     y_predict = [];
 
-    var_right_npy_dir = os.path.join(output_dir, "var_right_npy");
-    shutil.rmtree(var_right_npy_dir, ignore_errors=True);
-    os.mkdir(var_right_npy_dir);
+    # var_right_npy_dir = os.path.join(output_dir, "var_right_npy");
+    # shutil.rmtree(var_right_npy_dir, ignore_errors=True);
+    # os.mkdir(var_right_npy_dir);
 
     with tf.Session() as sess:
         info = dict();
@@ -115,9 +113,8 @@ def accuracy_var(model_dir, x_test, y_test, emo_num, emo_dict, output_dir):
             y_predict.append(info["classes"][0]);
             # print(info["probabilities"][0]);
 
-
-            if info["classes"][0] == y_test[i]:
-                npy_path = os.path.join(var_right_npy_dir, str(y_test[i]) + "_" + str(i) + ".npy");
-                np.save(npy_path, x_test[i]);
+            # if info["classes"][0] == y_test[i]:
+            #     npy_path = os.path.join(var_right_npy_dir, str(y_test[i]) + "_" + str(i) + ".npy");
+            #     np.save(npy_path, x_test[i]);
 
     metrics_report(y_predict, y_test, emo_num, emo_dict);
