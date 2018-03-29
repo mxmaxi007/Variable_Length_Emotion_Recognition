@@ -5,6 +5,7 @@ import os
 import math
 import re
 import time
+import shutil
 
 import numpy as np
 
@@ -39,6 +40,9 @@ def main():
     emo_dict = {0: "Neutral", 1: "Angry", 2: "Happy", 3: "Sad"};
     emo_num = 4;
     os.environ["CUDA_VISIBLE_DEVICES"] = "3";
+
+    shutil.rmtree(output_dir, ignore_errors=True);
+    os.mkdir(output_dir);
 
     # Spectrogram.wav_preprocess(wav_dir_path, spectrogram_dir_path, spectrogram_type);
     if spectrogram_type == "Const":

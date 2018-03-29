@@ -198,8 +198,6 @@ def data_set_gen(x_train, y_train, sample_weight_list, time_step_list, x_validat
 
 def model_train(x_train, y_train, x_validation, y_validation, class_num, sample_weight_list, weight_dict, output_dir):
     tf.reset_default_graph();
-    shutil.rmtree(output_dir, ignore_errors=True);
-    os.mkdir(output_dir);
 
     print("CNN_RNN_Var Training");
     train_sample_num = len(x_train);

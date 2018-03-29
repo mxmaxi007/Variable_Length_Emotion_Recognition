@@ -188,8 +188,6 @@ def expand_list(x_list, y_list):
 
 def model_train(x_train, y_train, x_validation, y_validation, class_num, sample_weight_list, weight_dict, output_dir):
     tf.reset_default_graph();
-    shutil.rmtree(output_dir, ignore_errors=True);
-    os.mkdir(output_dir);
     x_validation, y_validation = expand_list(x_validation, y_validation);
 
     print("CNN_RNN_Const Training");
