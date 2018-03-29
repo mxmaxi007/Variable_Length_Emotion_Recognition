@@ -38,7 +38,7 @@ def main():
     session_list = ["Ses01", "Ses02", "Ses03", "Ses04", "Ses05"];
     emo_dict = {0: "Neutral", 1: "Angry", 2: "Happy", 3: "Sad"};
     emo_num = 4;
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2,3";
+    os.environ["CUDA_VISIBLE_DEVICES"] = "3";
 
     # Spectrogram.wav_preprocess(wav_dir_path, spectrogram_dir_path, spectrogram_type);
     if spectrogram_type == "Const":
